@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Detalle de la Mascota</h1>
+
+    <!-- Información de la Mascota -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <p><strong>Nombre:</strong> {{ pet.name }}</p>
+            <p><strong>Fecha de nacimiento:</strong> {{ pet.birth_date.strftime('%d-%m-%Y') }}</p>
+            <p><strong>Edad:</strong> {{ pet.calculate_age() }} años</p>
+            <p><strong>Especie:</strong> {{ pet.species.name }}</p>
+            <p><strong>Raza:</strong> {{ pet.breed.name }}</p>
+            <p><strong>Dueño:</strong> {{ pet.owner.name }}</p>
+			<hr>
+            <p><strong>Observaciones:</strong></p>
+            {% if pet.observations %}
+                <p>{{ pet.observations | replace('\n', '<br>') | safe }}</p>
+            {% else %}
+                <p class="text-muted">No hay observaciones registradas.</p>
+            {% endif %}
+            <!-- Enlace para editar observaciones -->
+            <a href="{{ url_for('main.edit_pet', pet_id=pet.id) }}" class="btn btn-sm btn-info mt-2">Editar Observaciones</a>
+        </div>
+    </div>
+
+    <!-- Citas -->
+    <h3>Citas</h3>
+    <a href="{{ url_for('main.add_appointment', pet_id=pet.id) }}" class="btn btn-primary mb-3">Agregar Cita</a>
+    {% if pet.appointments %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Motivo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in pet.appointments %}
+                <tr>
+                    <td>{{ appointment.date.strftime('%d-%m-%Y %H:%M') }}</td>
+                    <td>{{ appointment.reason }}</td>
+                    <td>
+                        <a href="{{ url_for('main.edit_appointment', appointment_id=appointment.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{{ url_for('main.delete_appointment', appointment_id=appointment.id) }}" class="btn btn-danger btn-sm">Cancelar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-danger">No hay citas registradas para esta mascota.</p>
+    {% endif %}
+
+    <!-- Historial Médico -->
+    <h3 class="mt-4">Historial Médico</h3>
+    <a href="{{ url_for('main.add_medical_record', pet_id=pet.id) }}" class="btn btn-primary mb-3">Agregar Registro Médico</a>
+    {% if pet.medical_records %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in pet.medical_records %}
+                <tr>
+                    <td>{{ record.date.strftime('%d-%m-%Y') }}</td>
+                    <td>{{ record.description }}</td>
+                    <td>
+                        <a href="{{ url_for('main.edit_medical_record', record_id=record.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{{ url_for('main.delete_medical_record', record_id=record.id) }}" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-danger">No hay registros médicos para esta mascota.</p>
+    {% endif %}
+
+    <a href="{{ url_for('main.owner_detail', id=pet.owner_id) }}" class="btn btn-secondary mt-4">Regresar al Dueño</a>
+</div>
+{% endblock %}

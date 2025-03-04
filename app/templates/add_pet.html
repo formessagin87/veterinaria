@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Agregar Mascota para {{ owner.name }}</h2>
+    
+    <form method="POST" class="needs-validation" novalidate>
+        <!-- Campo Nombre -->
+        <div class="mb-3">
+            <label for="name" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+            <div class="invalid-feedback">Por favor, ingresa el nombre de la mascota.</div>
+        </div>
+
+        <!-- Campo Fecha de Nacimiento -->
+        <div class="mb-3">
+            <label for="birth_date" class="form-label">Fecha de Nacimiento</label>
+            <input type="date" class="form-control" id="birth_date" name="birth_date" required>
+            <div class="invalid-feedback">Por favor, selecciona la fecha de nacimiento.</div>
+        </div>
+
+        <!-- Dropdown de Especies -->
+		<div class="mb-3">
+			<label for="species_id" class="form-label">Especie</label>
+			<select id="species_id" name="species_id" class="form-select" required onchange="loadBreeds(this.value)">
+				<option value="" disabled selected>Selecciona una especie</option>
+				{% for specie in species %}
+					<option value="{{ specie.id }}">{{ specie.name }}</option>
+				{% endfor %}
+			</select>
+			<div class="invalid-feedback">Por favor, selecciona una especie.</div>
+		</div>
+
+		<!-- Dropdown de Razas -->
+		<div class="mb-3">
+			<label for="breed_id" class="form-label">Raza</label>
+			<select id="breed_id" name="breed_id" class="form-select" required>
+				<option value="" disabled selected>Selecciona una raza</option>
+				<!-- Se llenará dinámicamente -->
+			</select>
+			<div class="invalid-feedback">Por favor, selecciona una raza.</div>
+		</div>
+
+
+        <!-- Botones -->
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Guardar Mascota</button>
+            <a href="{{ url_for('main.owner_detail', id=owner.id) }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+<script>
+  function loadBreeds(speciesId) {
+      // Verifica que se haya seleccionado una especie
+      if (!speciesId) return;
+
+      // Enviar la petición AJAX (puedes usar fetch)
+      fetch(`/breeds/by_species/${speciesId}`)
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error("Error en la petición");
+              }
+              return response.json();
+          })
+          .then(data => {
+              // Obtener el dropdown de razas
+              const breedSelect = document.getElementById('breed_id');
+              // Limpiar las opciones anteriores
+              breedSelect.innerHTML = '<option value="" disabled selected>Selecciona una raza</option>';
+              // Recorrer las razas y agregarlas como opciones
+              data.forEach(breed => {
+                  const option = document.createElement('option');
+                  option.value = breed.id;
+                  option.textContent = breed.name;
+                  breedSelect.appendChild(option);
+              });
+          })
+          .catch(error => {
+              console.error("Error al cargar las razas:", error);
+          });
+  }
+</script>
+
+{% endblock %}

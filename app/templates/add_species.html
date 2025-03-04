@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Agregar Especie</h2>
+    
+    <form method="POST" class="needs-validation" novalidate>
+        <!-- Campo Nombre de la Especie -->
+        <div class="mb-3">
+            <label for="name" class="form-label">Nombre de la Especie</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+            <div class="invalid-feedback">Por favor, ingresa el nombre de la especie.</div>
+        </div>
+
+        <!-- Botones -->
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{{ url_for('main.list_species') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Validación del formulario con Bootstrap
+    (function () {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %}

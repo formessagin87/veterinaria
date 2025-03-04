@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Editar Raza</h2>
+<form method="POST">
+    <label for="name">Nombre de la Raza:</label>
+    <input type="text" id="name" name="name" value="{{ breed.name }}" required>
+    <button type="submit">Guardar Cambios</button>
+    <a href="{{ url_for('main.list_breeds', species_id=breed.species_id) }}">Cancelar</a>
+</form>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Editar Cita</h2>
+    
+    <form method="POST" class="needs-validation" novalidate>
+        <!-- Fecha y Hora -->
+        <div class="mb-3">
+            <label for="date" class="form-label">Fecha y Hora</label>
+            <input type="datetime-local" id="date" name="date" class="form-control" 
+                   value="{{ appointment.date.strftime('%Y-%m-%dT%H:%M') }}" required>
+            <div class="invalid-feedback">
+                Por favor, ingresa una fecha y hora válidas.
+            </div>
+        </div>
+
+        <!-- Motivo -->
+        <div class="mb-3">
+            <label for="reason" class="form-label">Motivo</label>
+            <textarea id="reason" name="reason" class="form-control" rows="4" required>{{ appointment.reason }}</textarea>
+            <div class="invalid-feedback">
+                Por favor, proporciona el motivo de la cita.
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <a href="{{ url_for('main.pet_detail', pet_id=appointment.pet_id) }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

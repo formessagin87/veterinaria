@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Editar Especie</h2>
+
+    <form method="POST" class="needs-validation" novalidate>
+        <!-- Nombre de la Especie -->
+        <div class="mb-3">
+            <label for="name" class="form-label">Nombre de la Especie</label>
+            <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                class="form-control" 
+                value="{{ species.name }}" 
+                required>
+            <div class="invalid-feedback">
+                Por favor, ingresa un nombre válido para la especie.
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary me-2">Guardar Cambios</button>
+            <a href="{{ url_for('main.list_species') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Validación visual de Bootstrap
+    (function () {
+        'use strict';
+        var forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+{% endblock %}

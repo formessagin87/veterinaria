@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Editar Registro Médico</h2>
+    
+    <form method="POST" class="needs-validation" novalidate>
+        <!-- Fecha -->
+        <div class="mb-3">
+            <label for="date" class="form-label">Fecha</label>
+            <input type="date" id="date" name="date" class="form-control" value="{{ record.date.strftime('%Y-%m-%d') }}" required>
+            <div class="invalid-feedback">
+                Por favor, selecciona una fecha.
+            </div>
+        </div>
+
+        <!-- Descripción -->
+        <div class="mb-3">
+            <label for="description" class="form-label">Descripción</label>
+            <textarea id="description" name="description" class="form-control" rows="4" required>{{ record.description }}</textarea>
+            <div class="invalid-feedback">
+                Por favor, proporciona una descripción del registro médico.
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <a href="{{ url_for('main.pet_detail', pet_id=record.pet_id) }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

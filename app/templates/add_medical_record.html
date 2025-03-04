@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Agregar Registro Médico para {{ pet.name }}</h2>
+    <form method="POST" class="needs-validation" novalidate>
+        <!-- Campo Fecha -->
+        <div class="mb-3">
+            <label for="date" class="form-label">Fecha:</label>
+            <input type="date" id="date" name="date" class="form-control" required>
+            <div class="invalid-feedback">Por favor ingresa una fecha válida.</div>
+        </div>
+
+        <!-- Campo Descripción -->
+        <div class="mb-3">
+            <label for="description" class="form-label">Descripción:</label>
+            <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
+            <div class="invalid-feedback">Por favor ingresa una descripción.</div>
+        </div>
+
+        <!-- Botones -->
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Guardar Registro</button>
+            <a href="{{ url_for('main.pet_detail', pet_id=pet.id) }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // JavaScript para la validación de Bootstrap
+    (function () {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %}
