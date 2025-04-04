@@ -4,8 +4,8 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     DEBUG = True
-    SECRET_KEY = 'clave_secreta_para_forms'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'veterinaria.db')
+    SECRET_KEY = 'Pa$$w0rd'
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:Pa$$w0rd@localhost/veterinaria'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Configuración de correo

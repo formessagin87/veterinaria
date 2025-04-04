@@ -4,29 +4,31 @@
 <div class="container">
     <h2 class="my-4">Editar Cita</h2>
     
-    <form method="POST" class="needs-validation" novalidate>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
         <!-- Fecha y Hora -->
         <div class="mb-3">
-            <label for="date" class="form-label">Fecha y Hora</label>
-            <input type="datetime-local" id="date" name="date" class="form-control" 
-                   value="{{ appointment.date.strftime('%Y-%m-%dT%H:%M') }}" required>
-            <div class="invalid-feedback">
-                Por favor, ingresa una fecha y hora válidas.
-            </div>
-        </div>
+			{{ form.date.label(class="form-label") }}
+			{{ form.date(class="form-control", type="datetime-local", value=appointment.date.strftime('%Y-%m-%dT%H:%M')) }}
+			{% for error in form.date.errors %}
+				<div class="text-danger">{{ error }}</div>
+			{% endfor %}
+		</div>
+
 
         <!-- Motivo -->
         <div class="mb-3">
-            <label for="reason" class="form-label">Motivo</label>
-            <textarea id="reason" name="reason" class="form-control" rows="4" required>{{ appointment.reason }}</textarea>
-            <div class="invalid-feedback">
-                Por favor, proporciona el motivo de la cita.
-            </div>
+            {{ form.reason.label(class="form-label") }}
+            {{ form.reason(class="form-control", rows="4") }}
+            {% for error in form.reason.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <!-- Botones -->
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-        <a href="{{ url_for('main.pet_detail', pet_id=appointment.pet_id) }}" class="btn btn-secondary">Cancelar</a>
+        <a href="{{ url_for('main.pet_detail', pet_id=form.pet_id.data) }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
 {% endblock %}

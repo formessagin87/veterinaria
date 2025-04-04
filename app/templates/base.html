@@ -3,61 +3,130 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ title or "Gestión Clínica Veterinaria" }}</title>
+  <title>{{ config.clinic_name }} - Sistema Veterinario</title>
+  
   <!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/intlTelInput.min.css') }}">
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="{{ url_for('main.index') }}">Veterinaria</a>
-	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-	</button>
-	<div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.list_owners') }}">Dueños</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.list_species') }}">Especies y Razas</a>
-                    </li>
-					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('main.appointments') }}">Citas</a>
-					</li>
-                </ul>
-            </div>
-	</div>
-	<div class="collapse navbar-collapse">
-				<ul class="navbar-nav ms-auto">
-					{% if current_user.is_authenticated %}
-					    <li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" id="testDropdown" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							  Bienvenido, {{ current_user.username }}
-							</a>
-							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="testDropdown">
-							  <li><a class="dropdown-item" href="{{ url_for('auth.update_password') }}">Actualizar Contraseña</a></li>
-							  <li><hr class="dropdown-divider"></li>
-							  <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Cerrar Sesión</a></li>
-							</ul>
-					  </li>
-					{% else %}
-						<li class="nav-item">
-							<a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar Sesión</a>
-						</li>
-				    {% endif %}
-				</ul>
-			</div>
-  </nav>
-    <!-- Main Content -->
-    <div class="container mt-4 flex-grow-1">
-        {% block content %}{% endblock %}
-    </div>
 
-    <!-- Footer -->
-    <footer class="bg-light text-center text-dark py-3">
-        <p class="mb-0">© 2025 Clínica Veterinaria</p>
-    </footer>
-	<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<div class="container-fluid">
+    <nav class="navbar" style="background-color: {{ config.primary_color }};">
+		<a class="navbar-brand" href="/">
+			<img src="{{ config.logo_url }}" alt="Logo" height="40">
+		</a>
+	</nav>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+      <!-- Menú de navegación a la izquierda -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('main.list_owners') }}">Dueños</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('main.list_species') }}">Especies y Razas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('main.appointments') }}">Citas</a>
+        </li>
+      </ul>
+
+      <!-- Menú de usuario a la derecha -->
+      <ul class="navbar-nav">
+        {% if current_user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Bienvenido, {{ current_user.username }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="{{ url_for('auth.update_password') }}">Actualizar Contraseña</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Cerrar Sesión</a></li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar Sesión</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- Main Content -->
+  <div class="container mt-4 flex-grow-1">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-light text-center text-dark py-3">
+    <p class="mb-0">© 2025 {{ config.clinic_name }} - Sistema Veterinario</p>
+  </footer>
+
+  <!-- Bootstrap JS Bundle (incluye Popper.js) -->
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+
+  <!-- Auto-cierre de alertas después de 3 segundos -->
+  <script>
+    setTimeout(function () {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+        const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+        bsAlert.close();
+      });
+    }, 3000);
+  </script>
+  
+	<script src="{{ url_for('static', filename='js/intlTelInput.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+
+	<script>
+	  const input = document.querySelector("#phone");
+	  const iti = window.intlTelInput(input, {
+		initialCountry: "auto",
+		preferredCountries: ["sv", "mx", "co", "us"],
+		utilsScript: "{{ url_for('static', filename='js/utils.js') }}",
+		nationalMode: false, // para incluir +503
+		separateDialCode: false
+	  });
+
+	  // Al enviar el formulario, forzar el valor del input al formato internacional
+	  const form = document.querySelector("form");
+	  form.addEventListener("submit", function (e) {
+		const phoneNumber = iti.getNumber();
+
+		// Si el número es inválido, prevenir envío y mostrar error
+		if (!iti.isValidNumber()) {
+		  e.preventDefault();
+		  alert("El número de teléfono no es válido.");
+		  return;
+		}
+
+		// Sobrescribe el valor del input con el número internacional
+		input.value = phoneNumber;
+	  });
+	</script>
+
+
+
 </body>
 </html>

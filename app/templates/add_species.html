@@ -3,13 +3,23 @@
 {% block content %}
 <div class="container mt-5">
     <h2 class="mb-4">Agregar Especie</h2>
-    
+
     <form method="POST" class="needs-validation" novalidate>
+        {{ form.hidden_tag() }}
+
         <!-- Campo Nombre de la Especie -->
         <div class="mb-3">
-            <label for="name" class="form-label">Nombre de la Especie</label>
-            <input type="text" class="form-control" id="name" name="name" required>
-            <div class="invalid-feedback">Por favor, ingresa el nombre de la especie.</div>
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", id="name", required=True) }}
+            {% if form.name.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.name.errors[0] }}
+                </div>
+            {% else %}
+                <div class="invalid-feedback">
+                    Por favor, ingresa el nombre de la especie.
+                </div>
+            {% endif %}
         </div>
 
         <!-- Botones -->

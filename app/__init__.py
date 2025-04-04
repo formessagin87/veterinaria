@@ -8,6 +8,8 @@ from flask_login import LoginManager, current_user
 from sqlalchemy import MetaData
 from functools import wraps
 from flask import abort
+
+
 # from app.models.user import User
 
 # (Opcional) Definir una convención de nombres para restricciones
@@ -51,19 +53,19 @@ def create_app():
     login_manager.init_app(app)
     mail.init_app(app)
     migrate.init_app(app, db)
+    
+    from app.models.config import ClinicConfig
 
     from app.routes import main
     app.register_blueprint(main)
-    
-    # Importa y registra el blueprint de autenticación
+
     from app.auth.routes import auth
     app.register_blueprint(auth, url_prefix='/auth')
 
-    return app
+    # 👇 Mover esto dentro de la función
+    @app.context_processor
+    def inject_clinic_config():
+        config = ClinicConfig.query.first()
+        return dict(config=config)
 
-# Habilitar claves foráneas en SQLite
-@event.listens_for(Engine, "connect")
-def enable_foreign_keys(dbapi_connection, connection_record):
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA foreign_keys=ON;")
-    cursor.close()
+    return app

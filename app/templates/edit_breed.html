@@ -1,11 +1,43 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Editar Raza</h2>
-<form method="POST">
-    <label for="name">Nombre de la Raza:</label>
-    <input type="text" id="name" name="name" value="{{ breed.name }}" required>
-    <button type="submit">Guardar Cambios</button>
-    <a href="{{ url_for('main.list_breeds', species_id=breed.species_id) }}">Cancelar</a>
-</form>
+<div class="container mt-5">
+    <h2 class="mb-4">Editar Raza</h2>
+
+    <form method="POST" class="needs-validation" novalidate>
+        {{ form.hidden_tag() }}
+
+        <!-- Nombre -->
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", id="name", required=True) }}
+            {% for error in form.name.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Botones -->
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <a href="{{ url_for('main.list_breeds', species_id=breed.species_id) }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Bootstrap validation visual
+    (function () {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
 {% endblock %}

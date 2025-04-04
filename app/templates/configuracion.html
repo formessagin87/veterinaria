@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Configuración de la Clínica</h2>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div>{{ form.clinic_name.label }} {{ form.clinic_name() }}</div>
+    <div>{{ form.logo_url.label }} {{ form.logo_url() }}</div>
+    <div>{{ form.primary_color.label }} {{ form.primary_color() }}</div>
+    <div>{{ form.secondary_color.label }} {{ form.secondary_color() }}</div>
+    <div>{{ form.welcome_message.label }} {{ form.welcome_message() }}</div>
+    <div>{{ form.submit() }}</div>
+  </form>
+{% endblock %}

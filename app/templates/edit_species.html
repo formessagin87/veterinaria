@@ -5,19 +5,21 @@
     <h2 class="my-4">Editar Especie</h2>
 
     <form method="POST" class="needs-validation" novalidate>
-        <!-- Nombre de la Especie -->
+        {{ form.hidden_tag() }}
+
+        <!-- Campo Nombre -->
         <div class="mb-3">
             <label for="name" class="form-label">Nombre de la Especie</label>
-            <input 
-                type="text" 
-                id="name" 
-                name="name" 
-                class="form-control" 
-                value="{{ species.name }}" 
-                required>
-            <div class="invalid-feedback">
-                Por favor, ingresa un nombre válido para la especie.
-            </div>
+            {{ form.name(class="form-control", id="name", required=True) }}
+            {% if form.name.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.name.errors[0] }}
+                </div>
+            {% else %}
+                <div class="invalid-feedback">
+                    Por favor, ingresa un nombre válido para la especie.
+                </div>
+            {% endif %}
         </div>
 
         <!-- Botones -->
@@ -32,8 +34,8 @@
     // Validación visual de Bootstrap
     (function () {
         'use strict';
-        var forms = document.querySelectorAll('.needs-validation');
-        Array.prototype.slice.call(forms).forEach(function (form) {
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(function (form) {
             form.addEventListener('submit', function (event) {
                 if (!form.checkValidity()) {
                     event.preventDefault();

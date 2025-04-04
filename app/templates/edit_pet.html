@@ -1,67 +1,60 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-    <h2 class="my-4">Editar Mascota</h2>
+<div class="container mt-5">
+    <h2 class="mb-4">Editar Mascota</h2>
 
-    <form method="POST" class="needs-validation" novalidate>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
         <!-- Nombre -->
         <div class="mb-3">
-            <label for="name" class="form-label">Nombre</label>
-            <input type="text" id="name" name="name" class="form-control" value="{{ pet.name }}" required>
-            <div class="invalid-feedback">
-                Por favor, ingresa el nombre de la mascota.
-            </div>
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+            {% for error in form.name.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
-        <!-- Fecha de Nacimiento -->
+        <!-- Fecha de nacimiento -->
         <div class="mb-3">
-            <label for="birth_date" class="form-label">Fecha de Nacimiento</label>
-            <input type="date" id="birth_date" name="birth_date" class="form-control" value="{{ pet.birth_date }}" required>
-            <div class="invalid-feedback">
-                Por favor, selecciona la fecha de nacimiento.
-            </div>
+            {{ form.birth_date.label(class="form-label") }}
+            {{ form.birth_date(class="form-control") }}
+            {% for error in form.birth_date.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
-        <!-- Dropdown de Especies -->
-		<div class="mb-3">
-			<label for="species_id" class="form-label">Especie</label>
-			<select id="species_id" name="species_id" class="form-select" required onchange="loadBreeds(this.value, '{{ pet.breed_id }}')">
-				<option value="" disabled {% if not pet.species_id %}selected{% endif %}>Selecciona una especie</option>
-				{% for specie in species %}
-					<option value="{{ specie.id }}" {% if pet.species_id == specie.id %}selected{% endif %}>
-						{{ specie.name }}
-					</option>
-				{% endfor %}
-			</select>
-			<div class="invalid-feedback">Por favor, selecciona una especie.</div>
-		</div>
-
-
-		<!-- Dropdown de Razas -->
-		<div class="mb-3">
-			<label for="breed_id" class="form-label">Raza</label>
-			<select id="breed_id" name="breed_id" class="form-select" required>
-				<option value="" disabled>Selecciona una raza</option>
-				{% for breed in breeds %}
-					<option value="{{ breed.id }}" {% if pet.breed_id == breed.id %}selected{% endif %}>
-						{{ breed.name }}
-					</option>
-				{% endfor %}
-			</select>
-			<div class="invalid-feedback">Por favor, selecciona una raza.</div>
-		</div>
-
-
-		<!-- Campo para Observaciones -->
+        <!-- Especie -->
         <div class="mb-3">
-            <label for="observations" class="form-label">Observaciones Generales</label>
-            <textarea id="observations" name="observations" class="form-control" rows="4">{{ pet.observations or '' }}</textarea>
+            {{ form.species_id.label(class="form-label") }}
+            {{ form.species_id(class="form-select", id="species_id", onchange="loadBreeds(this.value, '{{ form.breed_id.data }}')") }}
+            {% for error in form.species_id.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
-		
+
+        <!-- Raza -->
+        <div class="mb-3">
+            {{ form.breed_id.label(class="form-label") }}
+            {{ form.breed_id(class="form-select", id="breed_id") }}
+            {% for error in form.breed_id.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Observaciones -->
+        <div class="mb-3">
+            {{ form.observations.label(class="form-label") }}
+            {{ form.observations(class="form-control", rows="4") }}
+            {% for error in form.observations.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
         <!-- Botones -->
         <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary me-2">Guardar Cambios</button>
+            {{ form.submit(class="btn btn-primary me-2", value="Guardar Cambios") }}
             <a href="{{ url_for('main.pet_detail', pet_id=pet.id) }}" class="btn btn-secondary">Cancelar</a>
         </div>
     </form>
@@ -69,20 +62,12 @@
 
 <script>
   function loadBreeds(speciesId, selectedBreedId = null) {
-      console.log("Cargando razas para especie:", speciesId, "Seleccionada:", selectedBreedId);
       if (!speciesId) return;
       fetch(`/breeds/by_species/${speciesId}`)
-          .then(response => {
-              if (!response.ok) {
-                  throw new Error("Error en la petición");
-              }
-              return response.json();
-          })
+          .then(response => response.json())
           .then(data => {
-              console.log("Datos recibidos:", data);
               const breedSelect = document.getElementById('breed_id');
               breedSelect.innerHTML = '<option value="" disabled>Selecciona una raza</option>';
-              // Ordenar alfabéticamente (opcional)
               data.sort((a, b) => a.name.localeCompare(b.name));
               data.forEach(breed => {
                   const option = document.createElement('option');
@@ -97,15 +82,11 @@
           .catch(error => console.error("Error al cargar las razas:", error));
   }
 
-  // Para cargar las razas al iniciar la página si ya hay especie seleccionada:
   document.addEventListener("DOMContentLoaded", function(){
       const speciesSelect = document.getElementById('species_id');
-      if(speciesSelect && speciesSelect.value) {
-          // Pasar el valor actual de pet.breed_id (como string) si está disponible
-          loadBreeds(speciesSelect.value, "{{ pet.breed_id }}");
+      if (speciesSelect && speciesSelect.value) {
+          loadBreeds(speciesSelect.value, "{{ form.breed_id.data }}");
       }
   });
 </script>
-
-
 {% endblock %}

@@ -3,33 +3,53 @@
 {% block content %}
 <div class="container">
     <h2 class="my-4">Editar Información del Dueño</h2>
-    
+
     <form method="POST" class="needs-validation" novalidate>
+        {{ form.hidden_tag() }}
+
         <!-- Nombre -->
         <div class="mb-3">
-            <label for="name" class="form-label">Nombre</label>
-            <input type="text" id="name" name="name" class="form-control" value="{{ owner.name }}" required>
-            <div class="invalid-feedback">
-                Por favor, ingresa el nombre del dueño.
-            </div>
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", placeholder="Nombre del dueño", required=True) }}
+            {% if form.name.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.name.errors[0] }}
+                </div>
+            {% else %}
+                <div class="invalid-feedback">
+                    Por favor, ingresa el nombre del dueño.
+                </div>
+            {% endif %}
         </div>
 
         <!-- Teléfono -->
         <div class="mb-3">
-            <label for="phone" class="form-label">Teléfono</label>
-            <input type="text" id="phone" name="phone" class="form-control" value="{{ owner.phone }}" required>
-            <div class="invalid-feedback">
-                Por favor, ingresa un número de teléfono válido.
-            </div>
+            {{ form.phone.label(class="form-label") }}
+            {{ form.phone(class="form-control", placeholder="Teléfono", required=True) }}
+            {% if form.phone.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.phone.errors[0] }}
+                </div>
+            {% else %}
+                <div class="invalid-feedback">
+                    Por favor, ingresa un número de teléfono válido.
+                </div>
+            {% endif %}
         </div>
 
         <!-- Correo Electrónico -->
         <div class="mb-3">
-            <label for="email" class="form-label">Correo Electrónico</label>
-            <input type="email" id="email" name="email" class="form-control" value="{{ owner.email }}">
-            <div class="invalid-feedback">
-                Por favor, ingresa un correo electrónico válido.
-            </div>
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control", placeholder="Correo electrónico") }}
+            {% if form.email.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.email.errors[0] }}
+                </div>
+            {% else %}
+                <div class="invalid-feedback">
+                    Por favor, ingresa un correo electrónico válido.
+                </div>
+            {% endif %}
         </div>
 
         <!-- Botones -->
@@ -37,4 +57,21 @@
         <a href="{{ url_for('main.list_owners') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
+
+<script>
+  // Validación con Bootstrap
+  (function () {
+      'use strict';
+      const forms = document.querySelectorAll('.needs-validation');
+      Array.from(forms).forEach(form => {
+          form.addEventListener('submit', event => {
+              if (!form.checkValidity()) {
+                  event.preventDefault();
+                  event.stopPropagation();
+              }
+              form.classList.add('was-validated');
+          }, false);
+      });
+  })();
+</script>
 {% endblock %}

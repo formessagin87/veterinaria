@@ -33,16 +33,27 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
+        print("Formulario validado ✅")
         username_or_email = form.username.data.strip()
         password = form.password.data.strip()
         user = User.query.filter((User.username == username_or_email) | (User.email == username_or_email)).first()
-        if user and user.check_password(password):
-            login_user(user)
-            flash('Inicio de sesión exitoso', 'success')
-            return redirect(url_for('main.index'))
+        if user:
+            print("Usuario encontrado:", user.username)
+            if user.check_password(password):
+                print("Contraseña correcta 🔐")
+                login_user(user)
+                flash('Inicio de sesión exitoso', 'success')
+                return redirect(url_for('main.index'))
+            else:
+                print("Contraseña incorrecta ❌")
         else:
-            flash('Credenciales incorrectas', 'danger')
+            print("Usuario no encontrado ❌")
+        flash('Credenciales incorrectas', 'danger')
+    else:
+        print("Formulario no válido ❌")
+        print(form.errors)
     return render_template('auth/login.html', title="Login", form=form)
+
 
 @auth.route('/logout')
 @login_required
